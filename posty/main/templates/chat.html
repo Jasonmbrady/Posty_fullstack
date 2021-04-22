@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .chat-post {
+            outline: solid black 1px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+    <!-- all_posts -->
+</head>
+<body>
+    <div class="header">
+        <h1>Hello, {{request.session.username}}</h1>
+        <a href="/logout"><h3>Log Out</h3></a>
+    </div>
+    <form action="/new_post" method="POST">
+        {% csrf_token %}
+        <div>
+            <textarea name="text"></textarea>
+        </div>
+        <button>Chat!</button>
+    </form>
+    
+        {% for post in all_posts %}
+        <div class="chat-post">
+            <h5>{{post.poster.name }} says:</h5>
+            <p>{{ post.text }}</p>
+            {% if post.poster.id == request.session.uid %}
+                <p><a href="/edit_post/{{post.id}}">Edit</a> | <a href="/delete_post/{{post.id}}">Delete</a></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    
+</body>
+</html>

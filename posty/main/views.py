@@ -1,0 +1,58 @@
+from django.shortcuts import render, redirect
+from .models import *
+
+# Create your views here.
+def index(request):
+    return render(request, "index.html")
+
+def add_user(request):
+    new_name = request.POST["name"]
+    new_email = request.POST["email"]
+    new_user = User.objects.create(name=new_name, email=new_email)
+    request.session['username'] = new_user.name
+    request.session['uid'] = new_user.id
+    return redirect("/chat")
+
+def chat(request):
+    context = {
+        "all_posts": Post.objects.all(),
+    }
+    return render(request, "chat.html", context)
+
+def login_page(request):
+    return render(request, "login.html")
+
+def login(request):
+    this_name = request.POST['name']
+    this_user = User.objects.get(name=this_name)
+    request.session['username'] = this_user.name
+    request.session['uid'] = this_user.id
+    return redirect("/chat")
+
+def new_post(request):
+    posting_user = User.objects.get(id=request.session['uid'])
+    post_text = request.POST['text']
+    Post.objects.create(text = post_text, poster = posting_user)
+    return redirect("/chat")
+
+def edit_post(request, id):
+    context = {
+        "this_post": Post.objects.get(id=id)
+    }
+    return render(request, "edit.html", context)
+
+def update_post(request):
+    this_post_id = request.POST['id']
+    post_to_update = Post.objects.get(id = this_post_id)
+    post_to_update.text = request.POST['edited_text']
+    post_to_update.save()
+    return redirect("/chat")
+
+def delete_post(request, id):
+    post_to_delete = Post.objects.get(id=id)
+    post_to_delete.delete()
+    return redirect("/chat")
+
+def logout(request):
+    request.session.flush()
+    return redirect("/")

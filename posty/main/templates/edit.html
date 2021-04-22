@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- this_post -->
+</head>
+<body>
+    <h1>Edit your post:</h1>
+
+    <form action="/update_post" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ this_post.id }}">
+        <textarea name="edited_text" cols="30" rows="10">{{ this_post.text }}</textarea>
+        <button>submit</button>
+    </form>
+
+</body>
+</html>
