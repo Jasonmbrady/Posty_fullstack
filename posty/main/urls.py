@@ -12,4 +12,5 @@ urlpatterns = [
     path("update_post", views.update_post),
     path("delete_post/<int:id>", views.delete_post),
     path("logout", views.logout),
+    path("add_favorite/<int:post_id>", views.add_favorite),
 ]

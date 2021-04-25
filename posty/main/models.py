@@ -1,12 +1,24 @@
 from django.db import models
+import re
 
 # Create your models here.
+class UserManager(models.Manager):
+    def user_validator(self, postData):
+        errors = {}
+        EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+\.[a-zA-Z]+$')
+        if len(postData['name']) < 3:
+            errors['name'] = "User names must be at least 3 characters long"
+        if not EMAIL_REGEX.match(postData['email']):
+            errors['email'] = "Invalid e-mail address!"
+        return errors
+
 class User(models.Model):
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=64)
     # Time/Date Stamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = UserManager()
 
 class Post(models.Model):
     text = models.TextField()

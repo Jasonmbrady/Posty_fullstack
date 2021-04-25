@@ -1,21 +1,29 @@
 from django.shortcuts import render, redirect
 from .models import *
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
     return render(request, "index.html")
 
 def add_user(request):
-    new_name = request.POST["name"]
-    new_email = request.POST["email"]
-    new_user = User.objects.create(name=new_name, email=new_email)
-    request.session['username'] = new_user.name
-    request.session['uid'] = new_user.id
-    return redirect("/chat")
+    errors = User.objects.user_validator(request.POST)
+    if len(errors) > 0:
+        for key, val in errors.items():
+            messages.error(request, val)
+        return redirect("/")
+    else:
+        new_name = request.POST["name"]
+        new_email = request.POST["email"]
+        new_user = User.objects.create(name=new_name, email=new_email)
+        request.session['username'] = new_user.name
+        request.session['uid'] = new_user.id
+        return redirect("/chat")
 
 def chat(request):
     context = {
         "all_posts": Post.objects.all(),
+        "this_user": User.objects.get(id=request.session['uid'])
     }
     return render(request, "chat.html", context)
 
@@ -37,6 +45,7 @@ def new_post(request):
 
 def edit_post(request, id):
     context = {
+
         "this_post": Post.objects.get(id=id)
     }
     return render(request, "edit.html", context)
@@ -56,3 +65,8 @@ def delete_post(request, id):
 def logout(request):
     request.session.flush()
     return redirect("/")
+
+def add_favorite(request, post_id):
+    this_post = Post.objects.get(id=post_id)
+    this_post.favorite_of.add((User.objects.get(id=request.session['uid'])))
+    return redirect("/chat")

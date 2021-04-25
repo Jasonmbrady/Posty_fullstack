@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    {% load static %}
     <style>
         .chat-post {
             outline: solid black 1px;
@@ -13,8 +14,11 @@
             display: flex;
             justify-content: space-between;
         }
+        .chat-post img {
+            width: 20px;
+        }
     </style>
-    <!-- all_posts -->
+    <!-- all_posts, this_user-->
 </head>
 <body>
     <div class="header">
@@ -33,6 +37,14 @@
         <div class="chat-post">
             <h5>{{post.poster.name }} says:</h5>
             <p>{{ post.text }}</p>
+            <p>
+                {% if this_user not in post.favorite_of.all %}
+                <a href="add_favorite/{{post.id}}"><img src="{% static 'img/empty_heart.png' %}" /></a>
+                {% else %}
+                <img src="{% static 'img/full_heart.png' %}" />
+                {% endif %}
+
+            </p>
             {% if post.poster.id == request.session.uid %}
                 <p><a href="/edit_post/{{post.id}}">Edit</a> | <a href="/delete_post/{{post.id}}">Delete</a></p>
             {% endif %}

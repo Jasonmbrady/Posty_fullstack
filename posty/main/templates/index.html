@@ -10,6 +10,9 @@
             display: flex;
             justify-content: space-between;
         }
+        .err {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -18,6 +21,13 @@
         <p>Already a member? Log in <a href="/login_page">HERE!</a></p>
     </div>
     <h3>Register Here:</h3>
+    <div class="err">
+        {% if messages %}
+            {% for msg in messages %}
+            <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
     <form action="/add_user" method="POST">
         {% csrf_token %}
         <div class="input">
