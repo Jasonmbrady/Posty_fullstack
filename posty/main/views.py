@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.contrib import messages
+import bcrypt
+
 
 # Create your views here.
 def index(request):
@@ -15,7 +17,8 @@ def add_user(request):
     else:
         new_name = request.POST["name"]
         new_email = request.POST["email"]
-        new_user = User.objects.create(name=new_name, email=new_email)
+        new_pass = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
+        new_user = User.objects.create(name=new_name, email=new_email, password=new_pass)
         request.session['username'] = new_user.name
         request.session['uid'] = new_user.id
         return redirect("/chat")
@@ -32,10 +35,14 @@ def login_page(request):
 
 def login(request):
     this_name = request.POST['name']
-    this_user = User.objects.get(name=this_name)
-    request.session['username'] = this_user.name
-    request.session['uid'] = this_user.id
-    return redirect("/chat")
+    users = User.objects.filter(name=this_name)
+    if users:
+        this_user = users[0]
+        if bcrypt.checkpw(request.POST['password'].encode(), this_user.password.encode()):
+            request.session['username'] = this_user.name
+            request.session['uid'] = this_user.id
+            return redirect("/chat")
+    return redirect("/login_page")
 
 def new_post(request):
     posting_user = User.objects.get(id=request.session['uid'])

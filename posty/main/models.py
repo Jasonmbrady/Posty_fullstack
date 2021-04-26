@@ -10,11 +10,14 @@ class UserManager(models.Manager):
             errors['name'] = "User names must be at least 3 characters long"
         if not EMAIL_REGEX.match(postData['email']):
             errors['email'] = "Invalid e-mail address!"
+        if len(postData['password']) < 8:
+            errors['password'] = "Passwords must be 8+ characters"
         return errors
 
 class User(models.Model):
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=64)
+    password = models.CharField(max_length=30, default="password")
     # Time/Date Stamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
