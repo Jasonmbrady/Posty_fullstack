@@ -1,0 +1,13 @@
+#pw_eye {
+    width: 30px;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+}
+.user_form {
+    width: 30%;
+}
+.form-group {
+    display: flex;
+    justify-content: space-between;
+}
