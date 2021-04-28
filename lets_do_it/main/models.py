@@ -33,3 +33,12 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+
+class Task(models.Model):
+    task_name = models.CharField(max_length=64)
+    category = models.CharField(max_length=64)
+    completed = models.BooleanField(default = False)
+    users = models.ManyToManyField(User, related_name="tasks")
+    # Time/Date
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
