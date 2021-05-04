@@ -14,3 +14,7 @@
 .task_form {
     width: 40%;
 }
+
+.catList {
+    display: none !important;
+}

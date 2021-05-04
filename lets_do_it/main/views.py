@@ -41,7 +41,10 @@ def dashboard(request):
     return render(request, "dashboard.html", context)
 
 def new_task(request):
-    return render(request, 'new_task.html')
+    context = {
+        "all_tasks": Task.objects.all(),
+    }
+    return render(request, 'new_task.html', context)
 
 def create_task(request):
     t_name = request.POST['task_name']
@@ -68,4 +71,7 @@ def complete(request, id):
    this_task = Task.objects.get(id=id)
    this_task.completed = True
    this_task.save()
+   return redirect("/dashboard")
+
+def home(request):
    return redirect("/dashboard")
